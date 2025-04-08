@@ -1,0 +1,43 @@
+Resources:
+  FetchOfficerDetailsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: lambda-dynamodb-s3.lambda_function.lambda_handler
+      Runtime: python3.12
+      Policies:
+        - AmazonDynamoDBFullAccess
+        - AmazonS3FullAccess
+        - Statement:
+            Action:
+              - s3:GetObject
+            Resource:
+              - arn:aws:s3:::officers-profile-photos/*
+              - arn:aws:s3:::blogs-markdown-files/*
+            Effect: Allow
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: Officers
+          S3_BUCKET: officers-profile-photos
+          BLOGS_TABLE: Blogs
+          BLOGS_BUCKET: blogs-markdown-files  # Updated to match the Lambda function
+      Events:
+        OfficerApi:
+          Type: Api
+          Properties:
+            Path: /officers
+            Method: get
+        BlogGetAll:
+          Type: Api
+          Properties:
+            Path: /blogs
+            Method: get
+        BlogGetOne:
+          Type: Api
+          Properties:
+            Path: /blogs
+            Method: get
+        BlogUpload:
+          Type: Api
+          Properties:
+            Path: /blogs
+            Method: post
